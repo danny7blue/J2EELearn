@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+	xmlns:fn="http://xmlns.jcp.org/jsp/jstl/functions" 
+	xmlns:p="http://primefaces.org/ui" lang="en">
+	<h:head>
+		<title>JSF 2.2 Page</title>
+		<meta name="keywords" content="enter,your,keywords,here"/>
+		<meta name="description" content="A short description of this page."/>
+		<meta name="content-type" content="text/html; charset=UTF-8"/>
+    </h:head>
+	<h:body>
+		<h:form>
+    <p:remoteCommand name="rc" update="msgs" actionListener="#{remoteCommandView.execute}" />
+    <p:growl id="msgs" showDetail="true" />
+    <p:commandButton type="button" onclick="rc()" value="Execute" icon="ui-icon-refresh" />
+</h:form>
+	</h:body>
+</html>

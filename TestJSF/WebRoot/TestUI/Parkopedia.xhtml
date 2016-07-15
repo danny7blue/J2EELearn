@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+	xmlns:fn="http://xmlns.jcp.org/jsp/jstl/functions" 
+	xmlns:p="http://primefaces.org/ui" lang="en">
+	<h:head>
+		<title>Parkopedia Demo</title>
+		<meta name="keywords" content="enter,your,keywords,here"/>
+		<meta name="description" content="A short description of this page."/>
+		<meta name="content-type" content="text/html; charset=UTF-8"/>
+		<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+		<style type="text/css">
+		body, html,#allmap {width: 100%;height: 100%;margin:0;font-family:"微软雅黑";}
+		/* #l-map{height:600px;width:100%;} */ 
+		#r-result {
+            background-color: #fff;
+            padding:0 10px;
+            border: 1px solid silver;
+            box-shadow: 3px 4px 3px 0px silver;
+            position: absolute;
+            font-size: 12px;
+            left: 60px;
+            top: 20px;
+            border-radius: 3px;
+            line-height: 36px;
+        }
+		</style>
+	<script type="text/javascript" src="common/js/baiduMapHandler.js"></script>
+	<script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&amp;ak=kQPm04YFrwksYszEwdXmk7hfEt5z7TLO"></script>
+    
+			
+    </h:head>
+	<h:body>
+			
+			<div id="l-map" style="width:100%;height:60%;display:flex;overflow:auto;min-width:600px;max-width:3600px;min-height:600px;margin-top: 10px;">
+			<div id="container"
+				style="width: 100%; height: 100%;min-height: 600px;min-width:600px;max-width:3600px;">
+			</div>
+			<div id="r-result">
+			<p:outputLabel value="请输入要查询的地点:"></p:outputLabel>
+			<p:inputText id="suggestId"></p:inputText>
+			</div>
+			<div id="searchResultPanel" style="border:1px solid #C0C0C0;width:150px;height:auto; display:none;"></div>
+			</div>
+			<div id="test" style="width:150px;">
+			<h:form id="testForm">
+				<p:panelGrid columns="4" style="width:1000px">
+					<p:outputLabel value="请选择输出格式: "></p:outputLabel>
+					<p:selectOneMenu id="selectMenuFormat" value="#{parkopediaRequestBuilder.selectedFormat}">
+						<f:selectItem itemLabel="JSON" itemValue="json" />
+						<f:selectItem itemLabel="XML" itemValue="xml" />
+					</p:selectOneMenu>
+					<p:outputLabel value="请选择是否获取详细数据: "></p:outputLabel>
+					<p:selectOneMenu id="selectMenuStructured" value="#{parkopediaRequestBuilder.structured}">
+						<f:selectItem itemLabel="是" itemValue="1" />
+						<f:selectItem itemLabel="否" itemValue="0" />
+					</p:selectOneMenu>
+					<p:outputLabel value="请选择数据语言: "></p:outputLabel>
+					<p:selectOneMenu id="selectMenuLocale" value="#{parkopediaRequestBuilder.locale}">
+						<f:selectItem itemLabel="英文" itemValue="en" />
+						<f:selectItem itemLabel="中文" itemValue="zh" />
+						<f:selectItem itemLabel="德文" itemValue="de" />
+						<f:selectItem itemLabel="法文" itemValue="fr" />
+					</p:selectOneMenu>
+					<p:outputLabel value="请选择排序方式: "></p:outputLabel>
+					<p:selectOneMenu id="selectMenuSortord" value="#{parkopediaRequestBuilder.sortord}">
+						<f:selectItem itemLabel="不排序" itemValue="" noSelectionOption="true" />
+						<f:selectItem itemLabel="距离" itemValue="distance" />
+						<f:selectItem itemLabel="可用车位" itemValue="availability" />
+						<f:selectItem itemLabel="评分" itemValue="rating" />
+						<f:selectItem itemLabel="价格" itemValue="price" />
+					</p:selectOneMenu>
+				<p:outputLabel value="查询经度:"></p:outputLabel>
+				<p:inputText id="currentLng" value="#{parkopediaRequestBuilder.currentLng}" styleClass="currentLng"></p:inputText>
+				<p:outputLabel value="查询纬度:"></p:outputLabel>
+				<p:inputText id="currentLat" value="#{parkopediaRequestBuilder.currentLat}" styleClass="currentLat"></p:inputText>
+				<h:outputText style="width:25%;" value="开始时间:" />
+				<p:calendar id="startdatetime" style="width:75%;" readonlyInput="true" value="#{parkopediaRequestBuilder.startDateTime}" styleClass="ui-widget"  pattern="yyyy-MM-dd HH:mm"   />
+				<h:outputText value="结束时间:" style="width:25%;" />
+				<p:calendar id="enddatetime" style="width:75%;" readonlyInput="true" value="#{parkopediaRequestBuilder.endDateTime}" styleClass="ui-widget" pattern="yyyy-MM-dd HH:mm"     />
+				</p:panelGrid>
+			
+			<!-- <p:commandLink id="fullURL" value="#{parkopediaRequestBuilder.fullURL}" > -->
+			<!-- </p:commandLink> -->
+			<p:panelGrid columns="2" style="text-align:center; width:500px">
+				<p:commandButton value="获取附近停车场信息" style="width:100%">
+					<p:ajax event="click" process="@form"
+						listener="#{parkopediaRequestBuilder.buildRequest()}"
+						update=":testForm:currentLng, :testForm:currentLat, :testForm:selectMenuFormat, :testForm:hiddenResult, :testForm, :testForm:fullURL"
+						oncomplete="handleResult()"
+					/>
+				</p:commandButton>
+				<p:commandButton value="重置填入信息" style="width:100%">
+					<p:ajax event="click" process="@form"
+						listener="#{parkopediaRequestBuilder.resetValues()}"
+						update=":testForm"
+					/>
+				</p:commandButton>
+			</p:panelGrid>
+			<h:outputLink id="fullURL"  value="#{parkopediaRequestBuilder.fullURL}" target="_blank" style="width:200px">停车场数据信息链接</h:outputLink>
+			<p:inputText id="hiddenResult" style="display:none;" value="#{parkopediaRequestBuilder.result_string}" styleClass="hiddenResult"></p:inputText>
+			<!-- <h:inputHidden id="hiddenResult" value="#{parkopediaRequestBuilder.result_string}" ></h:inputHidden> -->
+			</h:form>
+			</div>
+	</h:body>
+	<script type="text/javascript">
+	// 百度地图API功能
+	var map = new BMap.Map("container");
+	var point = new BMap.Point(104.072092, 30.663468);
+	map.centerAndZoom("北京",15);
+	/* map.centerAndZoom(point,12); */
+	var locationMarker;
+	var myIcon = new BMap.Icon("images/mark30.png", new BMap.Size(30, 30), {
+			//使鼠标单击的点刚好匹配到图片的最下方
+			anchor: new BMap.Size(15, 30)   
+	 		});
+
+	/* var geolocation = new BMap.Geolocation();
+	geolocation.getCurrentPosition(function(r){
+		if(this.getStatus() == BMAP_STATUS_SUCCESS){
+			locationMarker = new BMap.Marker(r.point);
+			map.addOverlay(locationMarker);
+			map.panTo(r.point);
+			//alert('您的位置：'+r.point.lng+','+r.point.lat);
+			jQuery('.currentLng').val(r.point.lng);
+			jQuery('.currentLat').val(r.point.lat);
+		}
+		else {
+			alert('failed'+this.getStatus());
+		}        
+	},{enableHighAccuracy: true}) */
+	//关于状态码
+	//BMAP_STATUS_SUCCESS	检索成功。对应数值“0”。
+	//BMAP_STATUS_CITY_LIST	城市列表。对应数值“1”。
+	//BMAP_STATUS_UNKNOWN_LOCATION	位置结果未知。对应数值“2”。
+	//BMAP_STATUS_UNKNOWN_ROUTE	导航结果未知。对应数值“3”。
+	//BMAP_STATUS_INVALID_KEY	非法密钥。对应数值“4”。
+	//BMAP_STATUS_INVALID_REQUEST	非法请求。对应数值“5”。
+	//BMAP_STATUS_PERMISSION_DENIED	没有权限。对应数值“6”。(自 1.1 新增)
+	//BMAP_STATUS_SERVICE_UNAVAILABLE	服务不可用。对应数值“7”。(自 1.1 新增)
+	//BMAP_STATUS_TIMEOUT	超时。对应数值“8”。(自 1.1 新增)
+	
+	setMapEvent();//设置地图事件
+    addMapControl();//向地图添加控件
+    map.addEventListener("click", showInfo);
+    map.addEventListener("rightclick", addSerachPoint);
+	
+	var ac = new BMap.Autocomplete(    //建立一个自动完成的对象
+		{"input" : "suggestId"
+		,"location" : map
+	});
+
+	ac.addEventListener("onhighlight", function(e) {  //鼠标放在下拉列表上的事件
+	var str = "";
+		var _value = e.fromitem.value;
+		var value = "";
+		if (e.fromitem.index > -1) {
+			value = _value.province +  _value.city +  _value.district +  _value.street +  _value.business;
+		}    
+		str = "FromItem<br />index = " + e.fromitem.index + "<br />value = " + value;
+		
+		value = "";
+		if (e.toitem.index > -1) {
+			_value = e.toitem.value;
+			value = _value.province +  _value.city +  _value.district +  _value.street +  _value.business;
+		}    
+		str += "<br />ToItem<br />index = " + e.toitem.index + "<br />value = " + value;
+		G("searchResultPanel").innerHTML = str;
+	});
+
+	var myValue;
+	ac.addEventListener("onconfirm", function(e) {    //鼠标点击下拉列表后的事件
+	var _value = e.item.value;
+		myValue = _value.province +  _value.city +  _value.district +  _value.street +  _value.business;
+		G("searchResultPanel").innerHTML ="onconfirm<br />index = " + e.item.index + "<br />myValue = " + myValue;
+		
+		setPlace();
+	});
+</script>
+</html>
