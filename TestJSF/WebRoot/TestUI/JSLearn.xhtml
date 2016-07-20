@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+	xmlns:fn="http://xmlns.jcp.org/jsp/jstl/functions" lang="en">
+	<h:head>
+		<title>JS Learn Page</title>
+		<meta name="keywords" content="enter,your,keywords,here"/>
+		<meta name="description" content="A short description of this page."/>
+		<meta name="content-type" content="text/html; charset=UTF-8"/>
+		<script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+		<script>
+		function doSubmitForm() {
+    	var form = document.getElementById('test-onclick-form');
+    	var text = document.getElementById('input');
+    	text.value = "daisy";
+    	alert("Hey " + text.value);
+    	// 可以在此修改form的input...
+    	// 提交form:
+    	form.submit();
+		}
+		
+		function checkForm() {
+    		var form = document.getElementById('test-onsubmit-form');
+    		var text = document.getElementById('onsubmit_text');
+    		text.value = "sunny";
+    		alert("Hi " + text.value);
+    		// 可以在此修改form的input...
+    		// 继续下一步:
+    		return true;
+		}
+		
+		function translatePwd() {
+    		var pwd = document.getElementById('password');
+    		// 把用户输入的明文变为MD5:
+    		pwd.value = toMD5(pwd.value);
+    		console.log(pwd.value);
+    		// 继续下一步:
+    	return true;
+		}
+		
+		function handleonunload() {
+			console.log('onunload');
+		}
+		
+		function handleonload() {
+			console.log('onload');
+		}
+		
+		function hey() {
+			console.log('hey');
+			return "hey";
+		}
+</script>
+    
+    </h:head>
+	<h:body onunload="handleonunload()" onload="handleonload()"  >
+	<div id="abc">
+		<div id="hehe">
+			<form id="form"></form>
+		</div>
+	</div>
+		<p>
+			<ui:insert name="body">This is my JSF 2.2 Page.</ui:insert>
+		</p>
+		<form id="test-onclick-form">
+    		<input id="input" type="text" name="test"/>
+    		<button type="button" onclick="doSubmitForm()">Submit</button>
+		</form>
+		
+		<form id="test-onsubmit-form" onsubmit="return checkForm()">
+    		<input id="onsubmit_text" type="text" name="test"/>
+    		<button type="submit">Submit</button>
+		</form>
+		
+		<form id="login-form" method="post" onsubmit="return translatePwd()">
+    		<input type="text" id="username" name="username" />
+    		<input type="password" id="password" name="password" />
+    		<button type="submit">Submit</button>
+		</form>
+	</h:body>
+</html>
