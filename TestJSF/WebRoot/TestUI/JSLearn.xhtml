@@ -59,11 +59,42 @@
     
     </h:head>
 	<h:body onunload="handleonunload()" onload="handleonload()"  >
-	<div id="abc">
-		<div id="hehe">
-			<form id="form"></form>
+	<div id="abc" class="abcClass">
+		<div id="hehe" class="hehe Class">
+			<form id="form" class="formClass" name="email" lang="en" method="get">
+			<input id="input" name="email"/>
+			</form>
 		</div>
 	</div>
+	
+	<div class="testing">
+    <ul class="lang">
+        <li class="lang-javascript">JavaScript</li>
+        <li class="lang-python">Python</li>
+        <li class="lang-lua">Lua</li>
+    </ul>
+	</div>
+	
+	<div class="test-selector">
+    <ul class="test-lang">
+        <li class="lang-javascript">JavaScript</li>
+        <li class="lang-python">Python</li>
+        <li class="lang-lua">Lua</li>
+    </ul>
+    <ol class="test-lang">
+        <li class="lang-swift">Swift</li>
+        <li class="lang-java">Java</li>
+        <li class="lang-c">C</li>
+    </ol>
+</div>
+
+<ul class="lang">
+    <li class="js dy">JavaScript</li>
+    <li class="dy">Python</li>
+    <li id="swift">Swift</li>
+    <li class="dy">Scheme</li>
+    <li name="haskell">Haskell</li>
+</ul>
 		<p>
 			<ui:insert name="body">This is my JSF 2.2 Page.</ui:insert>
 		</p>
@@ -82,5 +113,21 @@
     		<input type="password" id="password" name="password" />
     		<button type="submit">Submit</button>
 		</form>
+		
+		<div id="test-jquery">
+    <p id="para-1" class="color-red">JavaScript</p>
+    <p id="para-2" class="color-green">Haskell</p>
+    <p class="color-red color-green">Erlang</p>
+    <p name="name" class="color-black">Python</p>
+    <form class="test-form" target="_blank" action="#0" onsubmit="return false;">
+        <legend>注册新用户</legend>
+        <fieldset>
+            <p><label>名字: <input name="name"/></label></p>
+            <p><label>邮件: <input name="email"/></label></p>
+            <p><label>口令: <input name="password" type="password"/></label></p>
+            <p><button type="submit">注册</button></p>
+        </fieldset>
+    </form>
+</div>
 	</h:body>
 </html>
