@@ -9,6 +9,12 @@ function bye(name) {
 	console.log(b + ',' + name + '!');
 }
 
+$(document).ready(function () {
+	$('test-form').submit(function () {
+		
+	})
+})
+
 module.exports = {
 	bye: bye,
 	greet: greet
